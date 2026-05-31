@@ -1,0 +1,2074 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>声闻于天</title>
+  <meta name="description" content="声闻于天：追寻张闻天的时代旋律" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+  <style>
+    :root {
+      --ink: #2d241d;
+      --muted: #6f5b48;
+      --paper: #fff7e9;
+      --paper-deep: #ead7b9;
+      --red: #8f1f1b;
+      --gold: #c9923f;
+      --green: #58794a;
+      --shadow: 0 18px 42px rgba(45, 36, 29, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+      background:
+        radial-gradient(circle at 16% 12%, rgba(255, 248, 218, 0.8), transparent 34rem),
+        linear-gradient(180deg, #f8efd9 0%, #f4dfbd 46%, #e9cfa4 100%);
+      overflow-x: hidden;
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    .intro {
+      min-height: 100svh;
+      display: grid;
+      align-items: center;
+      padding: 7vh 7vw 12vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intro::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(248, 239, 217, 0.9) 0%, rgba(248, 239, 217, 0.62) 38%, rgba(248, 239, 217, 0.08) 76%),
+        radial-gradient(circle at 73% 48%, rgba(143, 31, 27, 0.12), transparent 36rem);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .intro-map {
+      position: absolute;
+      right: clamp(96px, 11vw, 190px);
+      top: 58%;
+      width: min(740px, 56vw);
+      aspect-ratio: 1311 / 1200;
+      transform: translateY(-50%);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.86;
+      mix-blend-mode: darken;
+    }
+
+    .intro-map img,
+    .intro-map svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .intro-map img {
+      object-fit: contain;
+      filter: saturate(1.02) contrast(0.98) sepia(0.08);
+      opacity: 0.9;
+    }
+
+    .intro-map::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 52% 48%, rgba(248, 239, 217, 0), rgba(248, 239, 217, 0.42) 72%),
+        linear-gradient(90deg, rgba(248, 239, 217, 0.18), rgba(248, 239, 217, 0.08));
+      pointer-events: none;
+    }
+
+    .intro-route {
+      fill: none;
+      stroke: #b81918;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1420;
+      stroke-dashoffset: 1420;
+      filter: drop-shadow(0 3px 2px rgba(112, 18, 15, 0.28));
+    }
+
+    .intro-route-halo {
+      fill: none;
+      stroke: rgba(255, 242, 220, 0.78);
+      stroke-width: 16;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1420;
+      stroke-dashoffset: 1420;
+    }
+
+    .route-point {
+      fill: #b81918;
+      stroke: #fff1dd;
+      stroke-width: 5;
+      transform-box: fill-box;
+      transform-origin: center;
+      opacity: 0;
+    }
+
+    .route-point:nth-of-type(1) { animation-delay: 0.55s; }
+    .route-point:nth-of-type(2) { animation-delay: 2.55s; }
+    .route-point:nth-of-type(3) { animation-delay: 5s; }
+
+    .intro-map.is-playing .intro-route,
+    .intro-map.is-playing .intro-route-halo {
+      animation: drawRoute 4.6s 0.45s ease-out forwards;
+    }
+
+    .intro-map.is-playing .route-point {
+      animation: popPoint 420ms ease forwards;
+    }
+
+    @keyframes drawRoute {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes popPoint {
+      0% { opacity: 0; transform: scale(0.45); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .intro-inner {
+      width: min(920px, 100%);
+      position: relative;
+      z-index: 2;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      color: var(--red);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 44px;
+      height: 2px;
+      background: var(--red);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(48px, 11vw, 124px);
+      line-height: 0.96;
+      letter-spacing: 0;
+    }
+
+    .intro-copy {
+      margin: 24px 0 0;
+      max-width: 640px;
+      color: #4f4033;
+      font-size: clamp(17px, 2.4vw, 24px);
+      line-height: 1.75;
+    }
+
+    .scroll-cue {
+      margin-top: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .scroll-cue span {
+      width: 22px;
+      height: 38px;
+      border: 2px solid currentColor;
+      border-radius: 999px;
+      position: relative;
+    }
+
+    .scroll-cue span::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      width: 4px;
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+      transform: translateX(-50%);
+      animation: wheel 1.5s infinite;
+    }
+
+
+    .home-video-tools {
+      margin-top: 28px;
+      width: min(720px, 100%);
+      position: relative;
+      z-index: 3;
+    }
+
+    .home-video-toggle,
+    .home-video-select,
+    .home-video-clear {
+      border: 1px solid rgba(143, 31, 27, 0.22);
+      border-radius: 8px;
+      color: var(--red);
+      background: rgba(255, 248, 232, 0.68);
+      box-shadow: 0 8px 18px rgba(45, 36, 29, 0.08);
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .home-video-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 10px 15px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .home-video-toggle:hover,
+    .home-video-select:hover,
+    .home-video-clear:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 248, 232, 0.92);
+      border-color: rgba(143, 31, 27, 0.42);
+    }
+
+    .home-video-panel {
+      display: none;
+      margin-top: 12px;
+      padding: 14px;
+      background: rgba(255, 248, 232, 0.74);
+      border: 1px solid rgba(118, 83, 45, 0.16);
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(45, 36, 29, 0.12);
+      backdrop-filter: blur(6px);
+    }
+
+    .home-video-panel.open {
+      display: grid;
+      gap: 10px;
+    }
+
+    .home-video-tip {
+      margin: 0 0 2px;
+      color: #5a4938;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .home-video-row {
+      display: grid;
+      grid-template-columns: 66px 110px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.34);
+      border: 1px solid rgba(118, 83, 45, 0.1);
+    }
+
+    .home-video-name {
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .home-video-select,
+    .home-video-clear {
+      min-height: 34px;
+      padding: 7px 10px;
+      font-size: 13px;
+      box-shadow: none;
+    }
+
+    .home-video-select input {
+      display: none;
+    }
+
+    .home-video-status {
+      min-width: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .home-video-clear {
+      color: #76532d;
+    }
+
+    @keyframes wheel {
+      0% { opacity: 0; transform: translate(-50%, 0); }
+      35% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, 13px); }
+    }
+
+    .journey {
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(250, 238, 216, 0.92), rgba(235, 211, 175, 0.94)),
+        #f3dfbd;
+    }
+
+    .story-page {
+      position: relative;
+      height: 140svh;
+      min-height: 780px;
+    }
+
+    .stage {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(250, 238, 216, 0.96), rgba(235, 211, 175, 0.9)),
+        #f3dfbd;
+      isolation: isolate;
+    }
+
+    .story-page + .story-page .stage,
+    .story-page + .video-section,
+    .video-section + .story-page .stage {
+      border-top: 1px solid rgba(118, 83, 45, 0.12);
+    }
+
+    .sky {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 248, 231, 0.8) 0%, rgba(255, 243, 214, 0.46) 40%, rgba(193, 160, 112, 0.18) 100%);
+      z-index: -3;
+    }
+
+    .road-wrap {
+      position: absolute;
+      left: 50%;
+      bottom: -10svh;
+      width: min(980px, 118vw);
+      height: 150svh;
+      transform: translateX(-50%) perspective(900px) rotateX(58deg);
+      transform-origin: bottom center;
+      overflow: hidden;
+      z-index: -1;
+      border-radius: 48% 48% 0 0;
+      box-shadow: inset 0 34px 60px rgba(108, 77, 42, 0.08);
+    }
+
+    .road {
+      position: absolute;
+      inset: -105% 0;
+      background-image: none;
+      background-position: center top;
+      background-size: var(--road-size, cover);
+      background-repeat: var(--road-repeat, repeat-y);
+      transform: translateY(var(--road-y, 0));
+      filter: saturate(0.95) contrast(0.96);
+    }
+
+    .scenery {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .scene-img {
+      position: absolute;
+      left: 50%;
+      bottom: 31svh;
+      max-width: min(900px, 96vw);
+      max-height: 46svh;
+      object-fit: contain;
+      opacity: 0;
+      transform: translate(-50%, 24px) scale(0.96);
+      transition: opacity 520ms ease, transform 620ms ease;
+      filter: drop-shadow(0 28px 28px rgba(57, 42, 25, 0.18));
+    }
+
+    .scene-img.is-wide {
+      max-width: min(1480px, 158vw);
+      max-height: 68svh;
+      bottom: 21svh;
+    }
+
+    .scene-img.is-shanghai {
+      max-width: min(1240px, 132vw);
+      max-height: 58svh;
+      bottom: 24svh;
+    }
+
+    .scene-img.is-yida {
+      max-width: min(1420px, 152vw);
+      max-height: 66svh;
+      bottom: 21svh;
+    }
+
+    .story-page.is-active .scene-img,
+    .story-page.is-seen .scene-img {
+      opacity: 0.96;
+      transform: translate(-50%, 0) scale(1);
+    }
+
+    .story-page.has-scene-switch {
+      height: 210svh;
+      min-height: 1080px;
+    }
+
+    .story-page.has-scene-switch .scene-img {
+      opacity: 0;
+      transform: translate(-50%, 24px) scale(0.96);
+    }
+
+    .story-page.has-scene-switch.is-active .scene-img.active,
+    .story-page.has-scene-switch.is-seen .scene-img.active {
+      opacity: 0.96;
+      transform: translate(-50%, 0) scale(1);
+    }
+
+    .character {
+      position: absolute;
+      left: 50%;
+      bottom: 10svh;
+      width: clamp(92px, 18vw, 176px);
+      transform: translateX(-50%);
+      z-index: 5;
+      filter: drop-shadow(0 16px 12px rgba(43, 31, 20, 0.2));
+    }
+
+    .character img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .content-panel {
+      position: absolute;
+      left: 50%;
+      top: clamp(34px, 7svh, 72px);
+      width: min(880px, calc(100vw - 28px));
+      padding: 11px 14px 10px;
+      background:
+        linear-gradient(135deg, rgba(255, 251, 240, 0.62), rgba(246, 230, 201, 0.52));
+      border: 1px solid rgba(118, 83, 45, 0.1);
+      border-radius: 8px;
+      box-shadow: 0 8px 22px rgba(45, 36, 29, 0.08);
+      backdrop-filter: blur(6px);
+      transform: translateX(-50%);
+      z-index: 8;
+    }
+
+    .page-mini-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 7px;
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .page-mini-title::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      background: currentColor;
+    }
+
+    .year,
+    .panel-title {
+      display: none;
+    }
+
+    .panel-copy {
+      margin: 0;
+      color: #493a2d;
+      font-size: 14px;
+      line-height: 1.52;
+    }
+
+    .song-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 6px 9px;
+      color: #6c271e;
+      background: rgba(143, 31, 27, 0.08);
+      border: 1px solid rgba(143, 31, 27, 0.16);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .song-tag::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .panel-note {
+      margin: 6px 0 0;
+      padding-top: 6px;
+      border-top: 1px solid rgba(83, 58, 30, 0.16);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .progress {
+      position: absolute;
+      right: clamp(16px, 4vw, 56px);
+      top: 46%;
+      display: grid;
+      gap: 14px;
+      transform: translateY(-50%);
+      z-index: 9;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(79, 64, 51, 0.28);
+      cursor: pointer;
+      transition: transform 180ms ease, background 180ms ease;
+      padding: 0;
+    }
+
+    .dot.active {
+      transform: scale(1.45);
+      background: var(--red);
+    }
+
+    .chapter-label {
+      position: absolute;
+      right: clamp(20px, 5vw, 70px);
+      bottom: clamp(22px, 6vh, 58px);
+      color: rgba(45, 36, 29, 0.36);
+      font-size: clamp(42px, 12vw, 124px);
+      line-height: 1;
+      font-weight: 900;
+      z-index: 1;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .timeline {
+      position: absolute;
+      left: 50%;
+      bottom: 1.6svh;
+      width: min(498px, 74vw);
+      height: 9px;
+      background: url("assets/progress/timeline-empty.png") center / 100% 100% no-repeat;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      z-index: 4;
+      overflow: hidden;
+    }
+
+    .timeline-fill {
+      width: calc(var(--progress, 0) * 100%);
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .timeline-fill::before {
+      content: "";
+      display: block;
+      width: min(498px, 74vw);
+      height: 100%;
+      background: url("assets/progress/timeline-complete.png") left center / 100% 100% no-repeat;
+    }
+
+    .stage .progress,
+    .stage .timeline {
+      display: none;
+    }
+
+    .global-progress {
+      position: fixed;
+      right: clamp(16px, 4vw, 56px);
+      top: 46%;
+      display: grid;
+      gap: 14px;
+      transform: translateY(-50%);
+      z-index: 80;
+    }
+
+    .global-timeline {
+      position: fixed;
+      left: 50%;
+      bottom: 1.6svh;
+      width: min(498px, 74vw);
+      height: 9px;
+      background: url("assets/progress/timeline-empty.png") center / 100% 100% no-repeat;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      z-index: 80;
+      overflow: hidden;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 5px rgba(45, 36, 29, 0.18));
+    }
+
+    .global-timeline-fill {
+      width: calc(var(--progress, 0) * 100%);
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .global-timeline-fill::before {
+      content: "";
+      display: block;
+      width: min(498px, 74vw);
+      height: 100%;
+      background: url("assets/progress/timeline-complete.png") left center / 100% 100% no-repeat;
+    }
+
+    .next-page-cue {
+      position: absolute;
+      left: 50%;
+      bottom: 5.2svh;
+      transform: translateX(-50%);
+      z-index: 9;
+      padding: 6px 10px;
+      color: rgba(79, 64, 51, 0.72);
+      font-size: 12px;
+      background: rgba(255, 248, 232, 0.42);
+      border: 1px solid rgba(118, 83, 45, 0.12);
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .video-section,
+    .end {
+      min-height: 100svh;
+      display: grid;
+      align-items: center;
+      padding: 72px 7vw;
+      background:
+        radial-gradient(circle at 16% 18%, rgba(143, 31, 27, 0.28), transparent 31rem),
+        #2f2a24;
+      color: #f7ead3;
+    }
+
+    .video-inner,
+    .end-inner {
+      width: min(1080px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+
+    .video-heading {
+      display: grid;
+      gap: 8px;
+      text-align: center;
+      justify-items: center;
+    }
+
+    .video-heading h2 {
+      margin: 0;
+      font-size: clamp(30px, 6vw, 64px);
+      line-height: 1.1;
+    }
+
+    .video-heading p,
+    .end p {
+      margin: 0;
+      max-width: 760px;
+      color: rgba(247, 234, 211, 0.82);
+      font-size: clamp(17px, 2.4vw, 22px);
+      line-height: 1.7;
+    }
+
+    .end-copy {
+      text-align: center;
+      justify-self: center;
+      font-size: clamp(21px, 4vw, 36px) !important;
+    }
+
+    .ai-lab {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.76fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .video-playback-only {
+      width: min(520px, 100%);
+      justify-self: center;
+    }
+
+    .video-playback-only .video-frame {
+      max-height: 60svh;
+    }
+
+    .video-section.is-final-video {
+      min-height: 112svh;
+      align-items: end;
+      padding-bottom: max(92px, 12svh);
+      background:
+        radial-gradient(circle at 50% 78%, rgba(201, 146, 63, 0.18), transparent 30rem),
+        radial-gradient(circle at 16% 18%, rgba(143, 31, 27, 0.34), transparent 31rem),
+        linear-gradient(180deg, #2f2a24 0%, #211c18 72%, #16120f 100%);
+    }
+
+    .video-section.is-final-video .video-inner {
+      gap: clamp(28px, 6vh, 58px);
+    }
+
+    .final-ending {
+      position: relative;
+      margin: clamp(18px, 4vh, 42px) auto 0;
+      width: min(980px, 100%);
+      padding: clamp(28px, 5vw, 54px) clamp(22px, 6vw, 72px);
+      text-align: center;
+      color: #fff4dc;
+      border: 1px solid rgba(201, 146, 63, 0.44);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(143, 31, 27, 0.22), rgba(47, 42, 36, 0.54)),
+        rgba(255, 248, 232, 0.07);
+      box-shadow:
+        0 26px 70px rgba(0, 0, 0, 0.34),
+        inset 0 1px 0 rgba(255, 244, 220, 0.16);
+      overflow: hidden;
+    }
+
+    .final-ending::before,
+    .final-ending::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      width: min(420px, 62%);
+      height: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, transparent, rgba(201, 146, 63, 0.92), transparent);
+    }
+
+    .final-ending::before { top: 18px; }
+    .final-ending::after { bottom: 18px; }
+
+    .final-ending-kicker {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: clamp(14px, 2vw, 18px);
+      font-weight: 800;
+      letter-spacing: 0.28em;
+    }
+
+    .video-final-copy {
+      margin: 0 auto;
+      max-width: 900px;
+      text-align: center;
+      color: #fff4dc;
+      font-size: clamp(28px, 5.4vw, 58px);
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      line-height: 1.5;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.36);
+    }
+
+    .final-ending-mark {
+      margin: clamp(18px, 3vh, 28px) 0 0;
+      color: rgba(255, 244, 220, 0.74);
+      font-size: clamp(15px, 2vw, 19px);
+      letter-spacing: 0.16em;
+    }
+
+    .ai-tool,
+    .video-drop {
+      border: 1px solid rgba(247, 234, 211, 0.18);
+      border-radius: 8px;
+      background: rgba(255, 248, 232, 0.08);
+      box-shadow: 0 20px 42px rgba(0, 0, 0, 0.18);
+      padding: 18px;
+    }
+
+    .ai-tool h2,
+    .video-drop h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .prompt-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .prompt-tab,
+    .ai-action,
+    .upload-button {
+      border: 1px solid rgba(247, 234, 211, 0.28);
+      border-radius: 6px;
+      color: #f7ead3;
+      background: rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease;
+    }
+
+    .prompt-tab {
+      padding: 8px 11px;
+      font-size: 14px;
+    }
+
+    .prompt-tab.active,
+    .ai-action.primary {
+      border-color: rgba(201, 146, 63, 0.8);
+      background: rgba(143, 31, 27, 0.5);
+    }
+
+    .prompt-box {
+      width: 100%;
+      min-height: 142px;
+      resize: vertical;
+      border: 1px solid rgba(247, 234, 211, 0.22);
+      border-radius: 8px;
+      padding: 12px;
+      color: #2d241d;
+      background: rgba(255, 248, 232, 0.94);
+      font-size: 15px;
+      line-height: 1.7;
+      font-family: inherit;
+    }
+
+    .ai-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .ai-action,
+    .upload-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 12px;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .copy-state,
+    .upload-state {
+      min-height: 20px;
+      color: rgba(247, 234, 211, 0.78);
+      font-size: 13px;
+    }
+
+    .video-frame {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      max-height: 52svh;
+      border-radius: 8px;
+      background:
+        linear-gradient(145deg, rgba(247, 234, 211, 0.18), rgba(0, 0, 0, 0.18)),
+        #221d18;
+    }
+
+    .video-frame video {
+      width: 100%;
+      height: 100%;
+      display: none;
+      object-fit: cover;
+    }
+
+    .video-frame.has-video video {
+      display: block;
+    }
+
+    .video-placeholder {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      color: rgba(247, 234, 211, 0.72);
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .video-frame.has-video .video-placeholder {
+      display: none;
+    }
+
+    .video-input {
+      display: none;
+    }
+
+    .upload-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    @media (max-width: 720px) {
+      .intro {
+        align-items: start;
+        padding-top: 9vh;
+      }
+
+      .intro::before {
+        background:
+          linear-gradient(180deg, rgba(248, 239, 217, 0.94) 0%, rgba(248, 239, 217, 0.72) 44%, rgba(248, 239, 217, 0.2) 100%),
+          radial-gradient(circle at 56% 76%, rgba(143, 31, 27, 0.14), transparent 18rem);
+      }
+
+      .intro-map {
+        right: 50%;
+        top: auto;
+        bottom: 5vh;
+        width: min(500px, 100vw);
+        transform: translateX(50%);
+        opacity: 0.78;
+      }
+
+      .story-page {
+        height: 138svh;
+        min-height: 760px;
+      }
+
+      .story-page.has-scene-switch {
+        height: 188svh;
+        min-height: 960px;
+      }
+
+      .content-panel {
+        top: 34px;
+        padding: 10px 12px;
+      }
+
+      .panel-copy {
+        font-size: 13px;
+      }
+
+      .scene-img {
+        bottom: 32svh;
+        max-height: 34svh;
+        max-width: 118vw;
+      }
+
+      .scene-img.is-wide {
+        bottom: 28svh;
+        max-height: 50svh;
+        max-width: 178vw;
+      }
+
+      .scene-img.is-shanghai {
+        bottom: 30svh;
+        max-height: 44svh;
+        max-width: 148vw;
+      }
+
+      .scene-img.is-yida {
+        bottom: 27svh;
+        max-height: 50svh;
+        max-width: 170vw;
+      }
+
+      .character {
+        bottom: 10.5svh;
+        width: clamp(92px, 29vw, 132px);
+      }
+
+      .progress,
+      .global-progress {
+        top: auto;
+        right: 18px;
+        bottom: 34px;
+        transform: none;
+        grid-auto-flow: column;
+      }
+
+      .chapter-label {
+        right: 16px;
+        bottom: 12svh;
+      }
+
+      .timeline,
+      .global-timeline {
+        bottom: 1svh;
+      }
+
+      .next-page-cue {
+        bottom: 6.4svh;
+      }
+
+      .home-video-panel {
+        padding: 12px;
+      }
+
+      .home-video-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .home-video-status {
+        white-space: normal;
+      }
+
+      .ai-lab {
+        grid-template-columns: 1fr;
+      }
+
+      .video-frame {
+        max-height: none;
+      }
+    }
+
+
+    /* 全局固定底部进度条：放在 body 最外层，覆盖旧页面内进度条 */
+    .stage .timeline,
+    .story-page .timeline,
+    .global-timeline {
+      display: none !important;
+    }
+
+    #fixedTimeline {
+      position: fixed !important;
+      left: 50% !important;
+      right: auto !important;
+      bottom: max(12px, env(safe-area-inset-bottom)) !important;
+      width: min(560px, calc(100vw - 44px)) !important;
+      height: 12px !important;
+      transform: translateX(-50%) !important;
+      z-index: 2147483647 !important;
+      display: block !important;
+      overflow: hidden !important;
+      pointer-events: none !important;
+      border-radius: 999px !important;
+      border: 1px solid rgba(255, 244, 220, 0.74) !important;
+      background:
+        url("assets/progress/timeline-empty.png") center / 100% 100% no-repeat,
+        rgba(72, 52, 32, 0.24) !important;
+      box-shadow:
+        0 2px 8px rgba(45, 36, 29, 0.28),
+        0 0 0 2px rgba(45, 36, 29, 0.05) !important;
+    }
+
+    #fixedTimelineFill {
+      width: calc(var(--progress, 0) * 100%) !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+      border-radius: inherit !important;
+      background:
+        url("assets/progress/timeline-complete.png") left center / min(560px, calc(100vw - 44px)) 100% no-repeat,
+        linear-gradient(90deg, #8f1f1b, #c9923f) !important;
+      transition: width 120ms linear !important;
+    }
+
+    @media (max-width: 720px) {
+      #fixedTimeline {
+        bottom: max(10px, env(safe-area-inset-bottom)) !important;
+        width: min(498px, calc(100vw - 28px)) !important;
+        height: 11px !important;
+      }
+
+      #fixedTimelineFill {
+        background-size: min(498px, calc(100vw - 28px)) 100%, auto !important;
+      }
+    }
+
+
+
+    /* 合江视频页内最终结语：只保留两行文字 */
+    .video-section.is-final-video {
+      min-height: 165svh !important;
+      align-items: start !important;
+      padding-top: clamp(56px, 8svh, 96px) !important;
+      padding-bottom: max(120px, 16svh) !important;
+      background:
+        radial-gradient(circle at 50% 72%, rgba(201, 146, 63, 0.25), transparent 34rem),
+        radial-gradient(circle at 18% 12%, rgba(143, 31, 27, 0.38), transparent 32rem),
+        linear-gradient(180deg, #2f2a24 0%, #211c18 52%, #120f0d 100%) !important;
+    }
+
+    .video-section.is-final-video .video-inner {
+      gap: clamp(34px, 7svh, 76px) !important;
+    }
+
+    .final-ending {
+      position: relative !important;
+      width: min(1080px, 100%) !important;
+      min-height: min(48svh, 520px) !important;
+      margin: clamp(26px, 6svh, 68px) auto 0 !important;
+      padding: clamp(36px, 6vw, 72px) clamp(20px, 7vw, 96px) !important;
+      display: grid !important;
+      place-items: center !important;
+      align-content: center !important;
+      gap: 0 !important;
+      text-align: center !important;
+      color: #fff4dc !important;
+      border: 2px solid rgba(201, 146, 63, 0.68) !important;
+      border-radius: 28px !important;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255, 244, 220, 0.12), transparent 22rem),
+        linear-gradient(180deg, rgba(143, 31, 27, 0.36), rgba(22, 18, 15, 0.86)),
+        rgba(47, 42, 36, 0.92) !important;
+      box-shadow:
+        0 40px 95px rgba(0, 0, 0, 0.48),
+        inset 0 1px 0 rgba(255, 244, 220, 0.18),
+        0 0 0 8px rgba(201, 146, 63, 0.08) !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+    }
+
+    .final-ending::before {
+      content: "" !important;
+      position: absolute !important;
+      inset: 18px !important;
+      border: 1px solid rgba(255, 244, 220, 0.16) !important;
+      border-radius: 22px !important;
+      pointer-events: none !important;
+    }
+
+    .final-ending::after {
+      content: "" !important;
+      position: absolute !important;
+      left: 50% !important;
+      bottom: 24px !important;
+      width: min(580px, 70%) !important;
+      height: 2px !important;
+      transform: translateX(-50%) !important;
+      background: linear-gradient(90deg, transparent, rgba(201, 146, 63, 0.95), transparent) !important;
+    }
+
+    .final-ending-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-width: 74px !important;
+      min-height: 34px !important;
+      padding: 6px 16px !important;
+      color: #2d241d !important;
+      background: linear-gradient(180deg, #f4d38a, #c9923f) !important;
+      border-radius: 999px !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.22em !important;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28) !important;
+    }
+
+    .final-ending-kicker {
+      margin: 0 !important;
+      color: #f4d38a !important;
+      font-size: clamp(22px, 4.6vw, 54px) !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.12em !important;
+      line-height: 1.15 !important;
+      text-shadow: 0 6px 22px rgba(0, 0, 0, 0.38) !important;
+    }
+
+    .final-ending-divider {
+      width: min(520px, 72%) !important;
+      height: 3px !important;
+      border-radius: 999px !important;
+      background: linear-gradient(90deg, transparent, rgba(255, 244, 220, 0.45), rgba(201, 146, 63, 0.95), rgba(255, 244, 220, 0.45), transparent) !important;
+    }
+
+    .final-ending-divider.is-short {
+      width: min(260px, 42%) !important;
+      height: 2px !important;
+      opacity: 0.72 !important;
+    }
+
+    .video-final-copy {
+      margin: 0 auto !important;
+      max-width: 960px !important;
+      color: #fff7e9 !important;
+      font-size: clamp(32px, 5.2vw, 60px) !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.02em !important;
+      line-height: 1.42 !important;
+      text-shadow: 0 8px 28px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .final-ending-mark {
+      margin: 0 !important;
+      color: rgba(255, 244, 220, 0.82) !important;
+      font-size: clamp(17px, 2.6vw, 25px) !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.24em !important;
+    }
+
+    @media (max-width: 720px) {
+      .video-section.is-final-video {
+        min-height: 150svh !important;
+      }
+
+      .final-ending {
+        min-height: 62svh !important;
+        border-radius: 20px !important;
+      }
+
+      .video-final-copy {
+        font-size: clamp(26px, 8vw, 42px) !important;
+      }
+    }
+
+
+    /* v4: make the final two-line closing copy smaller and more balanced */
+    .video-section.is-final-video {
+      min-height: auto !important;
+      padding-bottom: max(86px, 10svh) !important;
+      background:
+        radial-gradient(circle at 50% 76%, rgba(201, 146, 63, 0.16), transparent 30rem),
+        radial-gradient(circle at 16% 18%, rgba(143, 31, 27, 0.26), transparent 30rem),
+        linear-gradient(180deg, #2f2a24 0%, #211c18 62%, #17120f 100%) !important;
+    }
+
+    .video-section.is-final-video .video-inner {
+      gap: clamp(24px, 5svh, 48px) !important;
+    }
+
+    .final-ending {
+      width: min(860px, calc(100vw - 36px)) !important;
+      min-height: auto !important;
+      margin: clamp(18px, 4svh, 42px) auto 0 !important;
+      padding: clamp(24px, 4.2vw, 42px) clamp(22px, 6vw, 64px) !important;
+      display: block !important;
+      text-align: center !important;
+      border: 1px solid rgba(201, 146, 63, 0.38) !important;
+      border-radius: 20px !important;
+      background:
+        linear-gradient(180deg, rgba(255, 248, 232, 0.08), rgba(255, 248, 232, 0.035)),
+        rgba(22, 18, 15, 0.38) !important;
+      box-shadow:
+        0 20px 54px rgba(0, 0, 0, 0.26),
+        inset 0 1px 0 rgba(255, 244, 220, 0.12) !important;
+      overflow: hidden !important;
+    }
+
+    .final-ending::before {
+      content: "" !important;
+      position: absolute !important;
+      left: 50% !important;
+      top: 18px !important;
+      right: auto !important;
+      bottom: auto !important;
+      width: min(360px, 58%) !important;
+      height: 1px !important;
+      border: 0 !important;
+      border-radius: 999px !important;
+      transform: translateX(-50%) !important;
+      background: linear-gradient(90deg, transparent, rgba(201, 146, 63, 0.74), transparent) !important;
+    }
+
+    .final-ending::after {
+      content: "" !important;
+      position: absolute !important;
+      left: 50% !important;
+      bottom: 18px !important;
+      width: min(280px, 46%) !important;
+      height: 1px !important;
+      transform: translateX(-50%) !important;
+      background: linear-gradient(90deg, transparent, rgba(201, 146, 63, 0.56), transparent) !important;
+    }
+
+    .video-final-copy {
+      margin: 0 auto !important;
+      max-width: 720px !important;
+      color: #fff4dc !important;
+      font-size: clamp(21px, 3vw, 34px) !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.04em !important;
+      line-height: 1.88 !important;
+      text-shadow: 0 3px 14px rgba(0, 0, 0, 0.34) !important;
+    }
+
+    @media (max-width: 720px) {
+      .video-section.is-final-video {
+        min-height: auto !important;
+      }
+
+      .final-ending {
+        width: min(92vw, 860px) !important;
+        padding: 26px 18px !important;
+        border-radius: 16px !important;
+      }
+
+      .video-final-copy {
+        font-size: clamp(18px, 5.4vw, 25px) !important;
+        line-height: 1.78 !important;
+        letter-spacing: 0.02em !important;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div id="fixedTimeline" aria-hidden="true"><div id="fixedTimelineFill"></div></div>
+  <main>
+    <section class="intro" aria-label="开篇">
+      <div class="intro-map" aria-hidden="true">
+        <img src="assets/home-map.webp" alt="" decoding="async" fetchpriority="high" />
+        <svg viewBox="0 0 1311 1200" role="presentation" focusable="false">
+          <path class="intro-route-halo" d="M1076 658 C1015 630 908 585 770 529 C895 416 1035 302 1220 207" />
+          <path class="intro-route" d="M1076 658 C1015 630 908 585 770 529 C895 416 1035 302 1220 207" />
+          <circle class="route-point" cx="1076" cy="658" r="13" />
+          <circle class="route-point" cx="770" cy="529" r="13" />
+          <circle class="route-point" cx="1220" cy="207" r="13" />
+        </svg>
+      </div>
+      <div class="intro-inner">
+        <p class="kicker">追寻张闻天的时代旋律</p>
+        <h1>声闻于天</h1>
+        <p class="intro-copy">从上海的学堂歌声，到陕北黄河岸边的船歌，再到合江工厂里的劳动号子，沿着张闻天的足迹听见时代的变化。</p>
+        <div class="scroll-cue" aria-hidden="true"><span></span>向下滚动</div>
+        <div class="home-video-tools" aria-label="首页视频设置">
+          <button class="home-video-toggle" id="homeVideoToggle" type="button">上传/保存三个视频</button>
+          <div class="home-video-panel" id="homeVideoPanel">
+            <p class="home-video-tip">在这里一次性选择上海、陕北、合江三个视频。选择后会保存到本机浏览器，下次打开这个 H5 会自动加载到对应播放页。</p>
+            <div class="home-video-row" data-home-video-row="shanghai">
+              <span class="home-video-name">上海</span>
+              <label class="home-video-select">选择视频<input type="file" accept="video/mp4,video/webm,video/quicktime,video/*" data-home-video-upload="shanghai"></label>
+              <span class="home-video-status" data-home-video-status="shanghai">未选择</span>
+              <button class="home-video-clear" type="button" data-clear-video="shanghai">清除</button>
+            </div>
+            <div class="home-video-row" data-home-video-row="yanan">
+              <span class="home-video-name">陕北</span>
+              <label class="home-video-select">选择视频<input type="file" accept="video/mp4,video/webm,video/quicktime,video/*" data-home-video-upload="yanan"></label>
+              <span class="home-video-status" data-home-video-status="yanan">未选择</span>
+              <button class="home-video-clear" type="button" data-clear-video="yanan">清除</button>
+            </div>
+            <div class="home-video-row" data-home-video-row="hejiang">
+              <span class="home-video-name">合江</span>
+              <label class="home-video-select">选择视频<input type="file" accept="video/mp4,video/webm,video/quicktime,video/*" data-home-video-upload="hejiang"></label>
+              <span class="home-video-status" data-home-video-status="hejiang">未选择</span>
+              <button class="home-video-clear" type="button" data-clear-video="hejiang">清除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="journey" id="journey" aria-label="张闻天生平经历"></section>
+
+  </main>
+
+  <nav class="global-progress" id="globalProgress" aria-label="人生节点导航"></nav>
+  <div class="global-timeline" aria-hidden="true"><div class="global-timeline-fill" id="globalTimelineFill"></div></div>
+
+  <script>
+    const CDN_BASE = "https://cdn.jsdelivr.net/gh/machenggong593-dev/zhangwentian@cd05b4a/";
+    const ASSET_VERSION = "separate-pages-v4";
+    const asset = (path) => {
+      if (location.protocol === "file:") return path;
+      return `${CDN_BASE}${path.split("/").map(encodeURIComponent).join("/")}?v=${ASSET_VERSION}`;
+    };
+
+    const chapters = [
+      {
+        year: "",
+        title: "AI导入",
+        label: "导入",
+        age: "少年",
+        scene: "assets/scenes/nanhui.webp",
+        road: "assets/roads/stone-v2.webp",
+        wide: false,
+        song: "课堂任务：听得见的历史",
+        copy: "张闻天化身时代见证者，带同学们从上海南汇出发，回顾《送别》《黄河船夫曲》，再走向1947年的东北。",
+        note: "这节课要为“革命足迹音乐地图”打基础：听歌、看地点、找联系。"
+      },
+      {
+        year: "",
+        title: "上海展厅",
+        label: "上海",
+        age: "青年",
+        scene: "assets/scenes/wusi.webp",
+        scenes: [
+          { src: "assets/scenes/wusi.webp", wide: true, sceneClass: "is-shanghai" },
+          { src: "assets/scenes/yida.webp", wide: true, sceneClass: "is-yida" }
+        ],
+        road: "assets/roads/brick-v2.webp",
+        wide: true,
+        sceneClass: "is-shanghai",
+        song: "中西结合，兼收并蓄",
+        copy: "《送别》代表学堂乐歌的启蒙声音。它借用外来曲调，填入中文歌词，在20世纪初开启民智、唤醒国民。张闻天青年时代在上海，就是听着这样的歌声成长的。“借用外来曲调”是那个时代的特征。随着人物继续向前，画面会从五四氛围切换到一大会址素材，表现上海阶段的历史递进。",
+        note: "音乐关键词：借外来火种，启国民心智。",
+        videoKey: "shanghai"
+      },
+      {
+        year: "",
+        title: "陕北展厅",
+        label: "陕北",
+        age: "壮年",
+        scene: "assets/scenes/yaodong.webp",
+        road: "assets/roads/dirt.webp",
+        wide: false,
+        song: "根植乡土，魂系家国",
+        copy: "《黄河船夫曲》来自陕北黄河岸边，吸收船工号子，一领众和的呐喊把音乐从书斋带到旷野。到了延安时期，音乐家们开始深入民间，用老百姓最熟悉的旋律唱出革命的信念。张闻天正是延安文艺座谈会的推动者之一。",
+        note: "音乐关键词：用民间旋律，唱革命信念。",
+        videoKey: "yanan"
+      },
+      {
+        year: "",
+        title: "合江展厅",
+        label: "合江",
+        age: "中年",
+        scene: "assets/scenes/factory.webp",
+        road: "assets/roads/concrete.webp",
+        wide: true,
+        song: "讴歌劳动，质朴铿锵",
+        copy: "1947年，马可来到合江省会佳木斯，深入工厂体验生活，用东北秧歌调和劳动号子写出工人的歌。当时合江根据地的领导人正是张闻天。他亲自鼓励马可到工人中间去，说“艺术要从生活中来”。正是在他的推动下，东北新文化运动蓬勃发展，《咱们工人有力量》才有了诞生的土壤。",
+        note: "音乐关键词：从汗水里长出工人的歌。",
+        videoKey: "hejiang"
+      }
+    ];
+
+    const frames = {
+      "少年": ["assets/characters/child-1.webp", "assets/characters/child-2.webp", "assets/characters/child-3.webp"],
+      "青年": ["assets/characters/young-1.webp", "assets/characters/young-2.webp", "assets/characters/young-3.webp"],
+      "壮年": ["assets/characters/adult-1.webp", "assets/characters/adult-2.webp", "assets/characters/adult-3.webp"],
+      "中年": ["assets/characters/middle-1.webp", "assets/characters/middle-2.webp", "assets/characters/middle-3.webp"]
+    };
+
+    const videoPrompts = {
+      shanghai: {
+        label: "上海",
+        title: "上海视频播放页",
+        intro: "上传上海场景视频后，在这里播放。"
+      },
+      yanan: {
+        label: "陕北",
+        title: "陕北视频播放页",
+        intro: "上传陕北场景视频后，在这里播放。"
+      },
+      hejiang: {
+        label: "合江",
+        title: "合江视频播放页",
+        intro: "上传合江场景视频后，在这里播放。"
+      }
+    };
+
+    const progressStops = [
+      { chapterIndex: 0, label: "导入" },
+      { chapterIndex: 1, label: "上海" },
+      { chapterIndex: 2, label: "陕北" },
+      { chapterIndex: 3, label: "合江" }
+    ];
+
+    const journey = document.getElementById("journey");
+    const intro = document.querySelector(".intro");
+    const introMap = document.querySelector(".intro-map");
+    const homeVideoToggle = document.getElementById("homeVideoToggle");
+    const homeVideoPanel = document.getElementById("homeVideoPanel");
+    const globalProgress = document.getElementById("globalProgress");
+    const globalTimelineFill = document.getElementById("globalTimelineFill");
+    const fixedTimelineFill = document.getElementById("fixedTimelineFill");
+    const VIDEO_DB_NAME = "zhangwentian-h5-videos";
+    const VIDEO_DB_STORE = "videos";
+    const VIDEO_DB_VERSION = 1;
+    const VIDEO_KEYS = Object.keys(videoPrompts);
+    const videoObjectUrls = new Map();
+
+    let isScrolling = false;
+    let scrollStopTimer = 0;
+    let ticking = false;
+    const loadedAssets = new Set();
+    const pageStates = [];
+
+
+    function ensureFixedTimeline() {
+      if (document.getElementById("fixedTimeline")) return;
+      const timeline = document.createElement("div");
+      timeline.id = "fixedTimeline";
+      timeline.setAttribute("aria-hidden", "true");
+      const fill = document.createElement("div");
+      fill.id = "fixedTimelineFill";
+      timeline.appendChild(fill);
+      document.body.prepend(timeline);
+    }
+
+    function preload(src) {
+      if (loadedAssets.has(src)) return;
+      loadedAssets.add(src);
+      const image = new Image();
+      image.decoding = "async";
+      image.src = src;
+    }
+
+    function resolveChapterAssets(index) {
+      const chapter = chapters[index];
+      if (!chapter) return [];
+      const scenePaths = chapter.scenes ? chapter.scenes.map((scene) => scene.src) : [chapter.scene];
+      return [...scenePaths, chapter.road, ...frames[chapter.age]].map(asset);
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function getProgressDotIndex(chapterIndex) {
+      if (chapterIndex <= 0) return 0;
+      if (chapterIndex === 1) return 1;
+      if (chapterIndex === 2) return 2;
+      return 3;
+    }
+
+    function buildDots(currentChapterIndex) {
+      const activeDotIndex = getProgressDotIndex(currentChapterIndex);
+      return progressStops.map((stop, dotIndex) => {
+        const activeClass = dotIndex === activeDotIndex ? " active" : "";
+        return `<button class="dot${activeClass}" type="button" data-jump-chapter="${stop.chapterIndex}" aria-label="${escapeHtml(stop.label)}"></button>`;
+      }).join("");
+    }
+
+    function renderGlobalProgress() {
+      globalProgress.innerHTML = buildDots(0);
+    }
+
+    function renderStoryPage(chapter, index) {
+      const section = document.createElement("section");
+      section.className = "story-page";
+      section.id = `chapter-${index}`;
+      section.dataset.chapterIndex = String(index);
+
+      const sceneItems = chapter.scenes && chapter.scenes.length ? chapter.scenes : [
+        { src: chapter.scene, wide: chapter.wide, sceneClass: chapter.sceneClass || "" }
+      ];
+      if (sceneItems.length > 1) section.classList.add("has-scene-switch");
+
+      const sceneHtml = sceneItems.map((scene, sceneIndex) => {
+        const sceneClass = [
+          "scene-img",
+          scene.wide ? "is-wide" : "",
+          scene.sceneClass || "",
+          sceneIndex === 0 ? "active" : ""
+        ].filter(Boolean).join(" ");
+        return `<img class="${sceneClass}" data-scene-index="${sceneIndex}" src="${asset(scene.src)}" alt="" decoding="async" />`;
+      }).join("");
+
+      section.innerHTML = `
+        <div class="stage">
+          <div class="sky"></div>
+          <div class="scenery" aria-hidden="true">${sceneHtml}</div>
+          <div class="road-wrap" aria-hidden="true"><div class="road"></div></div>
+          <article class="content-panel" aria-live="polite">
+            <p class="page-mini-title">${escapeHtml(chapter.title)}</p>
+            <div class="year">${escapeHtml(chapter.year)}</div>
+            <h2 class="panel-title">${escapeHtml(chapter.title)}</h2>
+            <p class="panel-copy">${escapeHtml(chapter.copy)}</p>
+            <div class="song-tag">${escapeHtml(chapter.song)}</div>
+            <p class="panel-note">${escapeHtml(chapter.note)}</p>
+          </article>
+          <div class="character" aria-hidden="true">
+            <img src="${asset(frames[chapter.age][0])}" alt="" decoding="async" />
+          </div>
+          <nav class="progress" aria-label="人生节点导航">${buildDots(index)}</nav>
+          <div class="chapter-label">${escapeHtml(chapter.label)}</div>
+          <div class="next-page-cue">继续下滑进入下一页</div>
+        </div>
+      `;
+      journey.appendChild(section);
+
+      pageStates.push({
+        section,
+        chapter,
+        index,
+        road: section.querySelector(".road"),
+        person: section.querySelector(".character img"),
+        sceneImages: [...section.querySelectorAll(".scene-img")],
+        timelineFill: section.querySelector(".timeline-fill"),
+        currentPersonSrc: "",
+        currentRoadSrc: ""
+      });
+    }
+
+    function renderVideoPage(key) {
+      const prompt = videoPrompts[key];
+      if (!prompt) return;
+      const section = document.createElement("section");
+      section.className = "video-section";
+      section.id = `video-${key}`;
+      const isFinalVideo = key === "hejiang";
+      if (isFinalVideo) section.classList.add("is-final-video");
+      const finalCopy = isFinalVideo
+        ? `<section class="final-ending" aria-label="课程结语">
+            <p class="video-final-copy">借用外来，扎根民间，源于劳动。<br>三首歌连成一条声脉，也照见文艺走向人民的道路。</p>
+          </section>`
+        : "";
+      section.innerHTML = `
+        <div class="video-inner">
+          <div class="video-heading">
+            <h2>${escapeHtml(prompt.title)}</h2>
+            <p>${escapeHtml(prompt.intro)}</p>
+          </div>
+          <div class="video-playback-only" aria-label="${escapeHtml(prompt.label)}视频播放">
+            <div class="video-drop" data-video-key="${escapeHtml(key)}">
+              <h2>${escapeHtml(prompt.label)}视频播放</h2>
+              <div class="video-frame">
+                <video controls playsinline></video>
+                <div class="video-placeholder">上传${escapeHtml(prompt.label)}场景视频后，在这里播放。</div>
+              </div>
+              <div class="upload-row">
+                <label class="upload-button">
+                  上传/更换视频
+                  <input class="video-input" type="file" accept="video/mp4,video/webm,video/quicktime,video/*" data-local-video-upload="${escapeHtml(key)}">
+                </label>
+                <span class="upload-state"></span>
+              </div>
+            </div>
+          </div>
+          ${finalCopy}
+        </div>
+      `;
+      journey.appendChild(section);
+    }
+
+    function renderPages() {
+      chapters.forEach((chapter, index) => {
+        renderStoryPage(chapter, index);
+        if (chapter.videoKey) renderVideoPage(chapter.videoKey);
+      });
+    }
+
+    function loadChapterAssets(index) {
+      resolveChapterAssets(index).forEach(preload);
+    }
+
+    function warmAllChapters() {
+      const runWhenIdle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 500));
+      let index = 0;
+      const warm = () => {
+        loadChapterAssets(index);
+        index += 1;
+        if (index < chapters.length) runWhenIdle(warm);
+      };
+      runWhenIdle(warm);
+    }
+
+    function applyRoadStyle(chapter, road) {
+      if (chapter.road.includes("stone")) {
+        road.style.setProperty("--road-size", "clamp(300px, 44vw, 460px) auto");
+        road.style.setProperty("--road-repeat", "repeat");
+      } else if (chapter.road.includes("brick")) {
+        road.style.setProperty("--road-size", "clamp(240px, 36vw, 380px) auto");
+        road.style.setProperty("--road-repeat", "repeat");
+      } else {
+        road.style.setProperty("--road-size", "cover");
+        road.style.setProperty("--road-repeat", "repeat-y");
+      }
+    }
+
+    function getDocumentProgress() {
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      return clamp(window.scrollY / maxScroll, 0, 1);
+    }
+
+    function getActiveChapterIndex(bestStoryIndex) {
+      const viewportMiddle = window.innerHeight * 0.5;
+      let activeIndex = bestStoryIndex >= 0 ? bestStoryIndex : 0;
+      let bestDistance = Math.abs(intro.getBoundingClientRect().top + intro.offsetHeight * 0.5 - viewportMiddle);
+
+      chapters.forEach((chapter, chapterIndex) => {
+        const storySection = document.getElementById(`chapter-${chapterIndex}`);
+        if (storySection) {
+          const rect = storySection.getBoundingClientRect();
+          const distance = Math.abs(rect.top + rect.height * 0.5 - viewportMiddle);
+          if (rect.top < window.innerHeight && rect.bottom > 0 && distance < bestDistance) {
+            activeIndex = chapterIndex;
+            bestDistance = distance;
+          }
+        }
+
+        if (chapter.videoKey) {
+          const videoSection = document.getElementById(`video-${chapter.videoKey}`);
+          if (videoSection) {
+            const rect = videoSection.getBoundingClientRect();
+            const distance = Math.abs(rect.top + rect.height * 0.5 - viewportMiddle);
+            if (rect.top < window.innerHeight && rect.bottom > 0 && distance < bestDistance) {
+              activeIndex = chapterIndex;
+              bestDistance = distance;
+            }
+          }
+        }
+      });
+
+      return activeIndex;
+    }
+
+    function updateGlobalProgress(bestStoryIndex) {
+      const documentProgress = getDocumentProgress();
+      if (globalTimelineFill) globalTimelineFill.style.setProperty("--progress", documentProgress);
+      if (fixedTimelineFill) fixedTimelineFill.style.setProperty("--progress", documentProgress);
+      const activeChapterIndex = getActiveChapterIndex(bestStoryIndex);
+      const activeDotIndex = getProgressDotIndex(activeChapterIndex);
+      [...globalProgress.querySelectorAll(".dot")].forEach((dot, dotIndex) => {
+        dot.classList.toggle("active", dotIndex === activeDotIndex);
+      });
+    }
+
+    function updateStoryPages() {
+      let bestIndex = -1;
+      let bestScore = Infinity;
+      const viewportMiddle = window.innerHeight * 0.5;
+
+      pageStates.forEach((state) => {
+        const rect = state.section.getBoundingClientRect();
+        const distanceToMiddle = Math.abs(rect.top + rect.height * 0.5 - viewportMiddle);
+        if (rect.top < window.innerHeight && rect.bottom > 0 && distanceToMiddle < bestScore) {
+          bestIndex = state.index;
+          bestScore = distanceToMiddle;
+        }
+      });
+
+      pageStates.forEach((state) => {
+        const { section, chapter, index, road, person, sceneImages, timelineFill } = state;
+        const rect = section.getBoundingClientRect();
+        const distance = Math.max(1, section.offsetHeight - window.innerHeight);
+        const pageProgress = clamp(-rect.top / distance, 0, 1);
+        const isActive = index === bestIndex;
+        const frameSet = frames[chapter.age];
+        const frameIndex = isScrolling && isActive ? Math.floor((pageProgress * 20) + (window.scrollY / 72)) % frameSet.length : 0;
+        const nextPersonSrc = asset(frameSet[frameIndex]);
+        const nextRoadSrc = asset(chapter.road);
+        const totalProgress = clamp((index + pageProgress) / (chapters.length - 1), 0, 1);
+
+        section.classList.toggle("is-active", isActive);
+        if (rect.top < window.innerHeight * 0.8) section.classList.add("is-seen");
+
+        if (nextPersonSrc !== state.currentPersonSrc) {
+          state.currentPersonSrc = nextPersonSrc;
+          person.src = nextPersonSrc;
+        }
+
+        if (nextRoadSrc !== state.currentRoadSrc) {
+          state.currentRoadSrc = nextRoadSrc;
+          road.style.backgroundImage = `url("${nextRoadSrc}")`;
+        }
+
+        if (sceneImages && sceneImages.length > 1) {
+          const activeSceneIndex = Math.min(sceneImages.length - 1, Math.floor(pageProgress * sceneImages.length));
+          sceneImages.forEach((image, sceneIndex) => image.classList.toggle("active", sceneIndex === activeSceneIndex));
+        }
+
+        applyRoadStyle(chapter, road);
+        road.style.setProperty("--road-y", `${-pageProgress * 42}%`);
+        if (timelineFill) timelineFill.style.setProperty("--progress", totalProgress);
+      });
+
+      updateGlobalProgress(bestIndex);
+    }
+
+    function requestUpdate() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        updateStoryPages();
+      });
+    }
+
+    function replayIntroRoute() {
+      introMap.classList.remove("is-playing");
+      void introMap.offsetWidth;
+      introMap.classList.add("is-playing");
+    }
+
+    function copyTextFromTextarea(textarea, stateElement) {
+      textarea.focus();
+      textarea.select();
+      const done = () => {
+        stateElement.textContent = "已复制";
+        window.setTimeout(() => {
+          stateElement.textContent = "";
+        }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textarea.value).then(done).catch(() => {
+          document.execCommand("copy");
+          done();
+        });
+      } else {
+        document.execCommand("copy");
+        done();
+      }
+    }
+
+    function openVideoDb() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error("当前浏览器不支持本地视频保存"));
+          return;
+        }
+        const request = indexedDB.open(VIDEO_DB_NAME, VIDEO_DB_VERSION);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(VIDEO_DB_STORE)) {
+            db.createObjectStore(VIDEO_DB_STORE, { keyPath: "key" });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error || new Error("打开本地视频库失败"));
+      });
+    }
+
+    async function videoDbAction(mode, action) {
+      const db = await openVideoDb();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(VIDEO_DB_STORE, mode);
+        const store = transaction.objectStore(VIDEO_DB_STORE);
+        const result = action(store);
+        transaction.oncomplete = () => {
+          db.close();
+          resolve(result && "result" in result ? result.result : result);
+        };
+        transaction.onerror = () => {
+          db.close();
+          reject(transaction.error || new Error("本地视频库操作失败"));
+        };
+      });
+    }
+
+    function getStoredVideo(key) {
+      return videoDbAction("readonly", (store) => store.get(key));
+    }
+
+    function putStoredVideo(key, file) {
+      const record = {
+        key,
+        name: file.name,
+        type: file.type || "video/mp4",
+        size: file.size,
+        blob: file,
+        updatedAt: Date.now()
+      };
+      return videoDbAction("readwrite", (store) => store.put(record));
+    }
+
+    function deleteStoredVideo(key) {
+      return videoDbAction("readwrite", (store) => store.delete(key));
+    }
+
+    function formatFileSize(bytes) {
+      if (!Number.isFinite(bytes)) return "";
+      if (bytes >= 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024 / 1024).toFixed(2)}GB`;
+      if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
+      if (bytes >= 1024) return `${Math.round(bytes / 1024)}KB`;
+      return `${bytes}B`;
+    }
+
+    function updateHomeVideoStatus(key, text, isSaved = false) {
+      const status = document.querySelector(`[data-home-video-status="${key}"]`);
+      if (!status) return;
+      status.textContent = text;
+      status.title = text;
+      status.dataset.saved = isSaved ? "true" : "false";
+    }
+
+    function setVideoSource(key, record) {
+      const drop = document.querySelector(`.video-drop[data-video-key="${key}"]`);
+      if (!drop || !record || !record.blob) return;
+      const video = drop.querySelector("video");
+      const frame = drop.querySelector(".video-frame");
+      const state = drop.querySelector(".upload-state");
+
+      if (videoObjectUrls.has(key)) URL.revokeObjectURL(videoObjectUrls.get(key));
+      const objectUrl = URL.createObjectURL(record.blob);
+      videoObjectUrls.set(key, objectUrl);
+      video.src = objectUrl;
+      video.load();
+      frame.classList.add("has-video");
+      state.textContent = `已加载：${record.name}`;
+      state.title = record.name;
+    }
+
+    function clearVideoSource(key) {
+      const drop = document.querySelector(`.video-drop[data-video-key="${key}"]`);
+      if (!drop) return;
+      const video = drop.querySelector("video");
+      const frame = drop.querySelector(".video-frame");
+      const state = drop.querySelector(".upload-state");
+      if (videoObjectUrls.has(key)) {
+        URL.revokeObjectURL(videoObjectUrls.get(key));
+        videoObjectUrls.delete(key);
+      }
+      video.removeAttribute("src");
+      video.load();
+      frame.classList.remove("has-video");
+      state.textContent = "";
+      state.title = "";
+    }
+
+    async function saveAndApplyVideo(key, file) {
+      if (!key || !file) return;
+      updateHomeVideoStatus(key, "正在保存到本机浏览器……");
+      await putStoredVideo(key, file);
+      const record = { key, name: file.name, type: file.type, size: file.size, blob: file, updatedAt: Date.now() };
+      setVideoSource(key, record);
+      updateHomeVideoStatus(key, `已保存：${file.name}（${formatFileSize(file.size)}）`, true);
+    }
+
+    async function hydrateStoredVideos() {
+      for (const key of VIDEO_KEYS) {
+        try {
+          const record = await getStoredVideo(key);
+          if (record && record.blob) {
+            setVideoSource(key, record);
+            updateHomeVideoStatus(key, `已保存：${record.name}（${formatFileSize(record.size)}）`, true);
+          } else {
+            updateHomeVideoStatus(key, "未选择");
+          }
+        } catch (error) {
+          updateHomeVideoStatus(key, "当前浏览器不支持自动保存视频");
+        }
+      }
+    }
+
+    async function attachLocalVideo(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const key = input.dataset.localVideoUpload || input.closest(".video-drop")?.dataset.videoKey;
+      try {
+        await saveAndApplyVideo(key, file);
+      } catch (error) {
+        const drop = input.closest(".video-drop");
+        const state = drop && drop.querySelector(".upload-state");
+        if (state) state.textContent = "保存失败，但本次已选择";
+        const record = { key, name: file.name, type: file.type, size: file.size, blob: file, updatedAt: Date.now() };
+        setVideoSource(key, record);
+        updateHomeVideoStatus(key, "保存失败：可能是视频过大或浏览器限制");
+      }
+    }
+
+    async function attachHomeVideo(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const key = input.dataset.homeVideoUpload;
+      try {
+        await saveAndApplyVideo(key, file);
+      } catch (error) {
+        updateHomeVideoStatus(key, "保存失败：可能是视频过大或浏览器限制");
+      }
+    }
+
+    async function clearStoredVideo(key) {
+      try {
+        await deleteStoredVideo(key);
+      } catch (error) {
+        // 即使 IndexedDB 删除失败，也先清掉当前页面播放状态，避免误以为还在使用。
+      }
+      clearVideoSource(key);
+      updateHomeVideoStatus(key, "已清除，请重新选择");
+      const input = document.querySelector(`[data-home-video-upload="${key}"]`);
+      if (input) input.value = "";
+    }
+
+    renderGlobalProgress();
+    renderPages();
+    hydrateStoredVideos();
+
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("#homeVideoToggle")) {
+        const isOpen = homeVideoPanel.classList.toggle("open");
+        homeVideoToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        return;
+      }
+
+      const clearButton = event.target.closest("[data-clear-video]");
+      if (clearButton) {
+        clearStoredVideo(clearButton.dataset.clearVideo);
+        return;
+      }
+
+      const dot = event.target.closest("[data-jump-chapter]");
+      if (dot) {
+        const targetIndex = Number(dot.dataset.jumpChapter);
+        const target = document.getElementById(`chapter-${targetIndex}`);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+    });
+
+    document.addEventListener("change", (event) => {
+      const homeInput = event.target.closest("[data-home-video-upload]");
+      if (homeInput) {
+        attachHomeVideo(homeInput);
+        return;
+      }
+
+      const input = event.target.closest("[data-local-video-upload]");
+      if (input) attachLocalVideo(input);
+    });
+
+    window.addEventListener("scroll", () => {
+      isScrolling = true;
+      window.clearTimeout(scrollStopTimer);
+      scrollStopTimer = window.setTimeout(() => {
+        isScrolling = false;
+        requestUpdate();
+      }, 120);
+      requestUpdate();
+    }, { passive: true });
+
+    window.addEventListener("resize", requestUpdate);
+
+    const introObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
+          replayIntroRoute();
+        }
+      });
+    }, { threshold: [0.55] });
+
+    introObserver.observe(intro);
+
+    replayIntroRoute();
+    updateStoryPages();
+    warmAllChapters();
+  </script>
+</body>
+</html>
