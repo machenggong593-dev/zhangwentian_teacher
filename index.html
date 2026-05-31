@@ -673,6 +673,14 @@
       pointer-events: none;
     }
 
+
+
+    /* 性能优化：视频页在未接近视口前不急着绘制内部复杂内容 */
+    .video-section {
+      content-visibility: auto;
+      contain-intrinsic-size: 1000px;
+    }
+
     .video-section,
     .end {
       min-height: 100svh;
@@ -1504,7 +1512,10 @@
     const VIDEO_DB_STORE = "videos";
     const VIDEO_DB_VERSION = 1;
     const VIDEO_KEYS = Object.keys(videoPrompts);
+    const VIDEO_META_STORAGE_KEY = `${VIDEO_DB_NAME}-metadata`;
     const videoObjectUrls = new Map();
+    const videoLoadingKeys = new Set();
+    const savedVideoKeys = new Set();
 
     let isScrolling = false;
     let scrollStopTimer = 0;
@@ -1588,7 +1599,9 @@
           scene.sceneClass || "",
           sceneIndex === 0 ? "active" : ""
         ].filter(Boolean).join(" ");
-        return `<img class="${sceneClass}" data-scene-index="${sceneIndex}" src="${asset(scene.src)}" alt="" decoding="async" />`;
+        const imageLoading = index <= 1 ? "eager" : "lazy";
+        const imagePriority = index <= 1 ? "high" : "low";
+        return `<img class="${sceneClass}" data-scene-index="${sceneIndex}" src="${asset(scene.src)}" alt="" loading="${imageLoading}" decoding="async" fetchpriority="${imagePriority}" />`;
       }).join("");
 
       section.innerHTML = `
@@ -1605,7 +1618,7 @@
             <p class="panel-note">${escapeHtml(chapter.note)}</p>
           </article>
           <div class="character" aria-hidden="true">
-            <img src="${asset(frames[chapter.age][0])}" alt="" decoding="async" />
+            <img src="${asset(frames[chapter.age][0])}" alt="" loading="${index <= 1 ? "eager" : "lazy"}" decoding="async" fetchpriority="${index <= 1 ? "high" : "low"}" />
           </div>
           <nav class="progress" aria-label="人生节点导航">${buildDots(index)}</nav>
           <div class="chapter-label">${escapeHtml(chapter.label)}</div>
@@ -1650,7 +1663,7 @@
             <div class="video-drop" data-video-key="${escapeHtml(key)}">
               <h2>${escapeHtml(prompt.label)}视频播放</h2>
               <div class="video-frame">
-                <video controls playsinline></video>
+                <video controls playsinline preload="none"></video>
                 <div class="video-placeholder">上传${escapeHtml(prompt.label)}场景视频后，在这里播放。</div>
               </div>
               <div class="upload-row">
@@ -1679,15 +1692,14 @@
       resolveChapterAssets(index).forEach(preload);
     }
 
-    function warmAllChapters() {
-      const runWhenIdle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 500));
-      let index = 0;
-      const warm = () => {
-        loadChapterAssets(index);
-        index += 1;
-        if (index < chapters.length) runWhenIdle(warm);
-      };
-      runWhenIdle(warm);
+    function runWhenIdle(callback) {
+      const idle = window.requestIdleCallback || ((fn) => window.setTimeout(fn, 500));
+      idle(callback);
+    }
+
+    function preloadNearbyChapters(activeIndex) {
+      const indexes = [activeIndex, activeIndex + 1].filter((index) => index >= 0 && index < chapters.length);
+      runWhenIdle(() => indexes.forEach(loadChapterAssets));
     }
 
     function applyRoadStyle(chapter, road) {
@@ -1765,6 +1777,8 @@
         }
       });
 
+      preloadNearbyChapters(bestIndex >= 0 ? bestIndex : 0);
+
       pageStates.forEach((state) => {
         const { section, chapter, index, road, person, sceneImages, timelineFill } = state;
         const rect = section.getBoundingClientRect();
@@ -1779,6 +1793,12 @@
 
         section.classList.toggle("is-active", isActive);
         if (rect.top < window.innerHeight * 0.8) section.classList.add("is-seen");
+
+        const shouldTouchVisuals = rect.top < window.innerHeight * 1.6 && rect.bottom > -window.innerHeight * 0.6;
+        if (!shouldTouchVisuals) {
+          if (timelineFill) timelineFill.style.setProperty("--progress", totalProgress);
+          return;
+        }
 
         if (nextPersonSrc !== state.currentPersonSrc) {
           state.currentPersonSrc = nextPersonSrc;
@@ -1877,6 +1897,10 @@
       return videoDbAction("readonly", (store) => store.get(key));
     }
 
+    function getStoredVideoKeys() {
+      return videoDbAction("readonly", (store) => store.getAllKeys());
+    }
+
     function putStoredVideo(key, file) {
       const record = {
         key,
@@ -1909,6 +1933,55 @@
       status.dataset.saved = isSaved ? "true" : "false";
     }
 
+    function updateVideoDropState(key, text, title = text) {
+      const drop = document.querySelector(`.video-drop[data-video-key="${key}"]`);
+      const state = drop && drop.querySelector(".upload-state");
+      if (!state) return;
+      state.textContent = text || "";
+      state.title = title || text || "";
+    }
+
+    function readVideoMetaMap() {
+      try {
+        return JSON.parse(localStorage.getItem(VIDEO_META_STORAGE_KEY) || "{}");
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function writeVideoMetaMap(metaMap) {
+      try {
+        localStorage.setItem(VIDEO_META_STORAGE_KEY, JSON.stringify(metaMap));
+      } catch (error) {
+        // 元数据只是用于显示文件名，写入失败不影响视频保存。
+      }
+    }
+
+    function rememberVideoMeta(record) {
+      if (!record || !record.key) return;
+      const metaMap = readVideoMetaMap();
+      metaMap[record.key] = {
+        name: record.name,
+        type: record.type || "video/mp4",
+        size: record.size,
+        updatedAt: record.updatedAt || Date.now()
+      };
+      writeVideoMetaMap(metaMap);
+    }
+
+    function forgetVideoMeta(key) {
+      const metaMap = readVideoMetaMap();
+      delete metaMap[key];
+      writeVideoMetaMap(metaMap);
+    }
+
+    function isVideoSectionNear(key, margin = 420) {
+      const section = document.getElementById(`video-${key}`);
+      if (!section) return false;
+      const rect = section.getBoundingClientRect();
+      return rect.top < window.innerHeight + margin && rect.bottom > -margin;
+    }
+
     function setVideoSource(key, record) {
       const drop = document.querySelector(`.video-drop[data-video-key="${key}"]`);
       if (!drop || !record || !record.blob) return;
@@ -1919,6 +1992,7 @@
       if (videoObjectUrls.has(key)) URL.revokeObjectURL(videoObjectUrls.get(key));
       const objectUrl = URL.createObjectURL(record.blob);
       videoObjectUrls.set(key, objectUrl);
+      video.preload = "metadata";
       video.src = objectUrl;
       video.load();
       frame.classList.add("has-video");
@@ -1948,24 +2022,86 @@
       updateHomeVideoStatus(key, "正在保存到本机浏览器……");
       await putStoredVideo(key, file);
       const record = { key, name: file.name, type: file.type, size: file.size, blob: file, updatedAt: Date.now() };
-      setVideoSource(key, record);
+      rememberVideoMeta(record);
+      savedVideoKeys.add(key);
       updateHomeVideoStatus(key, `已保存：${file.name}（${formatFileSize(file.size)}）`, true);
+
+      if (isVideoSectionNear(key)) {
+        setVideoSource(key, record);
+      } else {
+        updateVideoDropState(key, `已保存：${file.name}，进入本页后加载`, file.name);
+      }
     }
 
-    async function hydrateStoredVideos() {
-      for (const key of VIDEO_KEYS) {
-        try {
-          const record = await getStoredVideo(key);
-          if (record && record.blob) {
-            setVideoSource(key, record);
-            updateHomeVideoStatus(key, `已保存：${record.name}（${formatFileSize(record.size)}）`, true);
+    async function hydrateStoredVideoStatuses() {
+      try {
+        const keys = await getStoredVideoKeys();
+        const metaMap = readVideoMetaMap();
+        const keySet = new Set((keys || []).map(String));
+        VIDEO_KEYS.forEach((key) => {
+          if (keySet.has(key)) {
+            savedVideoKeys.add(key);
+            const meta = metaMap[key];
+            const status = meta
+              ? `已保存：${meta.name}（${formatFileSize(meta.size)}）`
+              : "已保存：进入播放页时加载";
+            updateHomeVideoStatus(key, status, true);
+            updateVideoDropState(key, meta ? `已保存：${meta.name}，进入本页后加载` : "已保存，进入本页后加载", meta && meta.name);
           } else {
+            savedVideoKeys.delete(key);
             updateHomeVideoStatus(key, "未选择");
+            updateVideoDropState(key, "");
           }
-        } catch (error) {
-          updateHomeVideoStatus(key, "当前浏览器不支持自动保存视频");
-        }
+        });
+      } catch (error) {
+        VIDEO_KEYS.forEach((key) => updateHomeVideoStatus(key, "当前浏览器不支持自动保存视频"));
       }
+    }
+
+    async function loadStoredVideoIfNeeded(key) {
+      if (!key || videoObjectUrls.has(key) || videoLoadingKeys.has(key) || !savedVideoKeys.has(key)) return;
+      videoLoadingKeys.add(key);
+      updateVideoDropState(key, "正在加载视频……");
+      try {
+        const record = await getStoredVideo(key);
+        if (record && record.blob) {
+          rememberVideoMeta(record);
+          setVideoSource(key, record);
+          updateHomeVideoStatus(key, `已保存：${record.name}（${formatFileSize(record.size)}）`, true);
+        } else {
+          savedVideoKeys.delete(key);
+          updateHomeVideoStatus(key, "未选择");
+          updateVideoDropState(key, "");
+        }
+      } catch (error) {
+        updateVideoDropState(key, "视频读取失败，请重新选择");
+      } finally {
+        videoLoadingKeys.delete(key);
+      }
+    }
+
+    function observeVideoSections() {
+      const loadNearVisibleVideos = () => {
+        VIDEO_KEYS.forEach((key) => {
+          if (isVideoSectionNear(key)) loadStoredVideoIfNeeded(key);
+        });
+      };
+
+      if (!("IntersectionObserver" in window)) {
+        window.addEventListener("scroll", loadNearVisibleVideos, { passive: true });
+        loadNearVisibleVideos();
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const drop = entry.target.querySelector(".video-drop[data-video-key]");
+          if (drop) loadStoredVideoIfNeeded(drop.dataset.videoKey);
+        });
+      }, { rootMargin: "420px 0px", threshold: 0.01 });
+
+      document.querySelectorAll(".video-section").forEach((section) => observer.observe(section));
     }
 
     async function attachLocalVideo(input) {
@@ -2001,6 +2137,8 @@
       } catch (error) {
         // 即使 IndexedDB 删除失败，也先清掉当前页面播放状态，避免误以为还在使用。
       }
+      savedVideoKeys.delete(key);
+      forgetVideoMeta(key);
       clearVideoSource(key);
       updateHomeVideoStatus(key, "已清除，请重新选择");
       const input = document.querySelector(`[data-home-video-upload="${key}"]`);
@@ -2009,7 +2147,7 @@
 
     renderGlobalProgress();
     renderPages();
-    hydrateStoredVideos();
+    hydrateStoredVideoStatuses().then(observeVideoSections);
 
     document.addEventListener("click", (event) => {
       if (event.target.closest("#homeVideoToggle")) {
@@ -2068,7 +2206,7 @@
 
     replayIntroRoute();
     updateStoryPages();
-    warmAllChapters();
+    preloadNearbyChapters(0);
   </script>
 </body>
 </html>
