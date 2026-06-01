@@ -1420,7 +1420,7 @@
         wide: false,
         song: "课堂任务：听得见的历史",
         copy: "张闻天化身时代见证者，带同学们从上海南汇出发，回顾《送别》《黄河船夫曲》，再走向1947年的东北。",
-        note: "跟着张闻天的足迹寻找声脉地图。"
+        note: "跟着张闻天的足迹探索声脉地图。"
       },
       {
         year: "",
@@ -1478,18 +1478,18 @@
     const videoPrompts = {
       shanghai: {
         label: "上海",
-        title: "上海视频播放页",
-        intro: "上传上海场景视频后，在这里播放。"
+            title: "借外来火种，启国民心智。",
+        intro: ""
       },
       yanan: {
         label: "陕北",
-        title: "陕北视频播放页",
-        intro: "上传陕北场景视频后，在这里播放。"
+        title: "用民间旋律，唱革命信念。",
+        intro: ""
       },
       hejiang: {
         label: "合江",
-        title: "合江视频播放页",
-        intro: "上传合江场景视频后，在这里播放。"
+        title: "从汗水里长出工人的歌。",
+        intro: ""
       }
     };
 
@@ -1663,7 +1663,7 @@
             <div class="video-drop" data-video-key="${escapeHtml(key)}">
               <h2>${escapeHtml(prompt.label)}视频播放</h2>
               <div class="video-frame">
-                <video controls playsinline preload="none"></video>
+                <video controls playsinline loop preload="none"></video>
                 <div class="video-placeholder">上传${escapeHtml(prompt.label)}场景视频后，在这里播放。</div>
               </div>
               <div class="upload-row">
@@ -1992,6 +1992,8 @@
       if (videoObjectUrls.has(key)) URL.revokeObjectURL(videoObjectUrls.get(key));
       const objectUrl = URL.createObjectURL(record.blob);
       videoObjectUrls.set(key, objectUrl);
+      video.loop = true;
+      video.playsInline = true;
       video.preload = "metadata";
       video.src = objectUrl;
       video.load();
@@ -2010,6 +2012,7 @@
         URL.revokeObjectURL(videoObjectUrls.get(key));
         videoObjectUrls.delete(key);
       }
+      video.pause();
       video.removeAttribute("src");
       video.load();
       frame.classList.remove("has-video");
@@ -2080,6 +2083,74 @@
       }
     }
 
+    function pauseVideoElement(video) {
+      if (!video) return;
+      video.pause();
+    }
+
+    function pauseVideosInSection(section) {
+      if (!section) return;
+      section.querySelectorAll("video").forEach(pauseVideoElement);
+    }
+
+    function pauseVideosOutsideViewport() {
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      document.querySelectorAll(".video-section").forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        const isMostlyInView = rect.top < viewportHeight * 0.72 && rect.bottom > viewportHeight * 0.28;
+        if (!isMostlyInView) pauseVideosInSection(section);
+      });
+    }
+
+    function bindVideoPlaybackBehavior() {
+      document.querySelectorAll(".video-section video").forEach((video) => {
+        video.loop = true;
+        video.playsInline = true;
+      });
+
+      document.addEventListener("play", (event) => {
+        const currentVideo = event.target;
+        if (!(currentVideo instanceof HTMLVideoElement)) return;
+        currentVideo.loop = true;
+        document.querySelectorAll(".video-section video").forEach((video) => {
+          if (video !== currentVideo) pauseVideoElement(video);
+        });
+      }, true);
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          document.querySelectorAll(".video-section video").forEach(pauseVideoElement);
+        }
+      });
+
+      window.addEventListener("pagehide", () => {
+        document.querySelectorAll(".video-section video").forEach(pauseVideoElement);
+      });
+
+      window.addEventListener("scroll", pauseVideosOutsideViewport, { passive: true });
+      window.addEventListener("resize", pauseVideosOutsideViewport);
+    }
+
+    function observeVideoPlaybackVisibility() {
+      const sections = document.querySelectorAll(".video-section");
+      if (!sections.length) return;
+
+      if (!("IntersectionObserver" in window)) {
+        pauseVideosOutsideViewport();
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || entry.intersectionRatio < 0.16) {
+            pauseVideosInSection(entry.target);
+          }
+        });
+      }, { threshold: [0, 0.08, 0.16, 0.32, 0.6] });
+
+      sections.forEach((section) => observer.observe(section));
+    }
+
     function observeVideoSections() {
       const loadNearVisibleVideos = () => {
         VIDEO_KEYS.forEach((key) => {
@@ -2147,6 +2218,8 @@
 
     renderGlobalProgress();
     renderPages();
+    bindVideoPlaybackBehavior();
+    observeVideoPlaybackVisibility();
     hydrateStoredVideoStatuses().then(observeVideoSections);
 
     document.addEventListener("click", (event) => {
